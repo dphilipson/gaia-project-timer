@@ -1,2 +1,108 @@
-/* some style */
+* {
+    margin: 0;
+    padding: 0;
+    font-family: "Verdana";
+}
 
+.timer-mystica {
+    display: flex;
+    display: -webkit-flex;
+
+    flex-direction: column;
+    -webkit-flex-direction: column;
+
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.current-player-area {
+    flex: 1;
+    -webkit-flex: 1;
+
+    display: flex;
+    display: -webkit-flex;
+
+    flex-direction: column;
+    -webkit-flex-direction: column;
+
+    justify-content: space-around;
+    -webkit-justify-content: space-around;
+
+    align-items: center;
+    -webkit-align-items: center;
+
+    background: green;
+}
+
+.active-faction-label {
+}
+
+
+.clock-area {
+    flex: 1;
+    -webkit-flex: 1;
+
+    display: flex;
+    display: -webkit-flex;
+
+    align-items: center;
+    -webkit-align-items: center;
+}
+
+.clock {
+    font-size: 96px;
+}
+
+.button-area {
+}
+
+.active-players-area {
+    padding-left: 16px;
+    padding-right: 16px;
+    background: blue;
+}
+
+.passed-players-area {
+    padding-left: 16px;
+    padding-right: 16px;
+    background: red;
+}
+
+.player-list-label {
+    display: flex;
+    display: -webkit-flex;
+
+    align-items: center;
+    -webkit-align-items: center;
+
+    font-size: 18px;
+    height: 36px;
+}
+
+.player-item {
+    display: flex;
+    display: -webkit-flex;
+
+    justify-content: space-between;
+    -webkit-justify-content: space-between;
+
+    align-items: center;
+    -webkit-align-items: center;
+
+    height: 36px;
+}
+
+.player-item .faction-label {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.player-item .timer {
+    font-size: 18px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
