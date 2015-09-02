@@ -30,18 +30,15 @@
   [:div.clock-area
    [:p.clock (format-time time-used-ms)]])
 
-(defn active-faction-label [faction]
-  [:p.active-faction-label faction])
-
 ;; Current player area
 
 (defn current-player-area [{:keys [faction time-used-ms]}]
   [:div.current-player-area
-   [active-faction-label faction]
+   [:p.active-faction-label faction]
    [main-clock time-used-ms]
    [:div.button-area
-    [:button.pass-button "Pass"]
-    [:button.done-button "Done"]]])
+    [:button.pass-button.btn.btn-default.btn-lg "Pass"]
+    [:button.done-button.btn.btn-primary.btn-lg "Next Player"]]])
 
 ;; Active player area
 

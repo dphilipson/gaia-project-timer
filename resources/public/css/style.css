@@ -28,9 +28,6 @@
     flex-direction: column;
     -webkit-flex-direction: column;
 
-    justify-content: space-around;
-    -webkit-justify-content: space-around;
-
     align-items: center;
     -webkit-align-items: center;
 
@@ -38,6 +35,8 @@
 }
 
 .active-faction-label {
+    padding-top: 48px;
+    font-size: 24px;
 }
 
 
@@ -57,6 +56,23 @@
 }
 
 .button-area {
+    width: 100%;
+    padding-bottom: 48px;
+
+    display: flex;
+    display: -webkit-flex;
+
+    justify-content: space-around;
+    -webkit-justify-content: space-around;
+}
+
+.pass-button {
+
+}
+
+.done-button {
+    padding-left: 48px;
+    padding-right: 48px;
 }
 
 .active-players-area {
