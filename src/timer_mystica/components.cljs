@@ -3,9 +3,14 @@
     [reagent.core :as r]
     [clojure.string :as str]))
 
+;; Utilities
+
+(defn class-string [classes]
+  (->> classes (map name) (str/join " ")))
+
 ;; Faction info
 
-(def faction-color-classes
+(def faction-color-class
   {:auren :green
    :witches :green
    :alchemists :black
@@ -26,6 +31,11 @@
    :acolytes :orange
    :changelings :variable
    :riverwalkers :variable})
+
+(defn faction-text-color [faction]
+  (if (= (faction-color-class faction) :black)
+    :text-light
+    :text-dark))
 
 (defn faction-name [faction]
   (->>
@@ -49,7 +59,7 @@
 ;; Current player area
 
 (defn current-player-area [{:keys [faction time-used-ms]}]
-  [:div.current-player-area
+  [:div.current-player-area {:class (faction-text-color faction)}
    [:p.active-faction-label (faction-name faction)]
    [main-clock time-used-ms]
    [:div.button-area
@@ -59,7 +69,8 @@
 ;; Active player area
 
 (defn player-list-item [{:keys [faction time-used-ms]}]
-  [:div.player-item {:class (faction-color-classes faction)}
+  [:div.player-item {:class (class-string [(faction-color-class faction)
+                                           (faction-text-color faction)])}
    [:p.faction-label (faction-name faction)]
    [:p.timer (format-time time-used-ms)]])
 
@@ -81,8 +92,10 @@
 ;; Main component
 
 (defn main [app-state]
-  (let [{:keys [current-player active-players passed-players]} @app-state]
-    [:div.timer-mystica {:class (faction-color-classes (:faction current-player))}
+  (let [{:keys [current-player active-players passed-players]} @app-state
+        current-faction (:faction current-player)]
+    [:div.timer-mystica {:class (class-string [(faction-color-class current-faction)
+                                               (faction-text-color current-faction)])}
      [current-player-area current-player]
      [active-players-area active-players]
      [passed-players-area passed-players]]))
