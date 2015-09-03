@@ -1,4 +1,4 @@
-* {
+*, p {
     margin: 0;
     padding: 0;
     font-family: "Verdana";
@@ -30,8 +30,6 @@
 
     align-items: center;
     -webkit-align-items: center;
-
-    background: green;
 }
 
 .active-faction-label {
@@ -78,13 +76,13 @@
 .active-players-area {
     padding-left: 16px;
     padding-right: 16px;
-    background: blue;
+    padding-bottom: 16px;
 }
 
 .passed-players-area {
     padding-left: 16px;
     padding-right: 16px;
-    background: red;
+    padding-bottom: 16px;
 }
 
 .player-list-label {
@@ -109,6 +107,8 @@
     -webkit-align-items: center;
 
     height: 36px;
+    padding-left: 16px;
+    padding-right: 16px;
 }
 
 .player-item .faction-label {
@@ -121,4 +121,50 @@
     font-size: 18px;
     margin-top: 0;
     margin-bottom: 0;
+}
+
+/* Faction background colors */
+
+.gray {
+    background: rgb(192, 192, 192);
+}
+
+.red {
+    background: rgb(240, 128, 128);
+}
+
+.yellow {
+    background: rgb(240, 240, 128);
+}
+
+.brown {
+    background: rgb(176, 128, 64);
+}
+
+.black {
+    background: rgb(64, 64, 64);
+}
+
+.black p {
+    color: rgb(192, 192, 192);
+}
+
+.blue {
+    background: rgb(96, 192, 240);
+}
+
+.green {
+    background: rgb(128, 240, 128);
+}
+
+.white {
+    background: rgb(224, 240, 255);
+}
+
+.orange {
+    background: rgb(240, 192, 96);
+}
+
+.variable {
+    background: #dcdcdc;
 }
