@@ -27,6 +27,14 @@
                          :output-to "resources/public/js/compiled/timer_mystica.js"
                          :output-dir "resources/public/js/compiled/out"
                          :source-map-timestamp true }}
+             {:id "test"
+              :source-paths ["src" "test"]
+              :compiler {:output-to "resources/public/js/test/test.js"
+                         :output-dir "resources/public/js/test/out"
+                         :optimizations :none
+                         :main timer-mystica.test-runner
+                         :asset-path "js/test/out"
+                         :source-map-timestamp true }}
              {:id "min"
               :source-paths ["src"]
               :compiler {:output-to "resources/public/js/compiled/timer_mystica.js"

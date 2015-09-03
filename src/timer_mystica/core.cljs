@@ -5,8 +5,6 @@
 
 (enable-console-print!)
 
-(println "Edits to this text should show up in your developer console.")
-
 ;; define your app data so that it doesn't get over-written on reload
 
 (def test-data
@@ -18,8 +16,9 @@
 
 (defonce app-state (r/atom test-data))
 
-(r/render-component [components/main app-state]
-                    (. js/document (getElementById "app")))
+(when-let [app-container (.getElementById js/document "app")]
+  (r/render-component [components/main app-state]
+                      app-container))
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on

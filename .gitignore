@@ -13,3 +13,5 @@ pom.xml
 .nrepl-port
 /.idea
 *.iml
+.lein-failures
+/resources/public/js/
