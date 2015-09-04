@@ -45,11 +45,15 @@
     state
     (update-in state [:current-player :time-used-ms] + ms)))
 
+(defn start-round [state]
+  (assoc state :between-rounds? false))
+
 ; Add components with Reagent
 
 (when-let [app-container (.getElementById js/document "app")]
   (r/render-component [components/main app-state
-                       {:on-next #(swap! app-state player-selected-next)
+                       {:on-start-round #(swap! app-state start-round)
+                        :on-next #(swap! app-state player-selected-next)
                         :on-pass #(swap! app-state player-selected-pass)}]
                       app-container))
 

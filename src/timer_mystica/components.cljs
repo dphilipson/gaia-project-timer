@@ -61,6 +61,9 @@
 (defn start-round-button [round on-start-round]
   [:button.start-round-button.btn.btn-primary.btn-lg {:on-click on-start-round} (str "Start Round " round)])
 
+(defn game-over-button []
+  [:button.game-over-button.btn.btn-primary.btn-lg.disabled "Game Over"])
+
 (defn pass-button [on-pass]
   [:button.pass-button.btn.btn-default.btn-lg {:on-click on-pass} "Pass"])
 
@@ -73,12 +76,13 @@
 (defn button-area [{:keys [between-rounds? round active-players]}
                    {:keys [on-start-round on-pass on-next]}]
   [:div.button-area
-   (if between-rounds?
-     [start-round-button round  on-start-round]
-     (list ^{:key :pass-button} [pass-button on-pass]
-           (if (seq active-players)
-             ^{:key :next-button} [next-button on-next]
-             ^{:key :last-player-next-button} [last-player-next-button])))])
+   (cond
+     (> round 6) [game-over-button]
+     between-rounds? [start-round-button round on-start-round]
+     :else (list ^{:key :pass-button} [pass-button on-pass]
+                 (if (seq active-players)
+                   ^{:key :next-button} [next-button on-next]
+                   ^{:key :last-player-next-button} [last-player-next-button])))])
 
 ;; Current player area
 
@@ -101,7 +105,7 @@
 (defn active-players-area [active-players]
   (when (seq active-players)
     [:div.active-players-area
-     [:p.player-list-label "Active:"]
+     [:p.player-list-label "Next:"]
      (for [player active-players]
        ^{:key (:faction player)} [player-list-item player])]))
 

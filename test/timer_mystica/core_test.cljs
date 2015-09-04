@@ -74,6 +74,12 @@
           updated-state (tm/advance-time initial-state 200)]
       (is (= updated-state initial-state)))))
 
+(deftest test-start-round
+  (let [initial-state (make-state :between-rounds? true)
+        updated-state (tm/start-round initial-state)
+        expected-state (make-state :between-rounds? false)]
+    (is (= updated-state expected-state))))
+
 (defn run-tests []
   (.clear js/console)
   (cljs.test/run-all-tests #"timer-mystica.*-test"))
