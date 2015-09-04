@@ -46,7 +46,7 @@
 ;; Clock
 
 (defn format-time [ms]
-  (let [total-seconds (/ ms 1000)
+  (let [total-seconds (quot ms 1000)
         minutes (quot total-seconds 60)
         seconds (rem total-seconds 60)
         seconds-str (if (< seconds 10) (str "0" seconds) (str seconds))]
@@ -58,13 +58,14 @@
 
 ;; Current player area
 
-(defn current-player-area [{:keys [faction time-used-ms]}]
+(defn current-player-area [{:keys [faction time-used-ms]}
+                           {:keys [on-next on-pass]}]
   [:div.current-player-area {:class (faction-text-color faction)}
    [:p.active-faction-label (faction-name faction)]
    [main-clock time-used-ms]
    [:div.button-area
-    [:button.pass-button.btn.btn-default.btn-lg "Pass"]
-    [:button.done-button.btn.btn-primary.btn-lg "Next Player"]]])
+    [:button.pass-button.btn.btn-default.btn-lg {:on-click on-pass} "Pass"]
+    [:button.done-button.btn.btn-primary.btn-lg {:on-click on-next} "Next Player"]]])
 
 ;; Active player area
 
@@ -75,15 +76,16 @@
    [:p.timer (format-time time-used-ms)]])
 
 (defn active-players-area [active-players]
-  [:div.active-players-area
-   [:p.player-list-label "Active:"]
-   (for [player active-players]
-     ^{:key (:faction player)} [player-list-item player])])
+  (when (seq active-players)
+    [:div.active-players-area
+     [:p.player-list-label "Active:"]
+     (for [player active-players]
+       ^{:key (:faction player)} [player-list-item player])]))
 
 ;; Passed player area
 
 (defn passed-players-area [passed-players]
-  (when (not-empty passed-players)
+  (when (seq passed-players)
     [:div.passed-players-area
      [:p.player-list-label "Passed:"]
      (for [player passed-players]
@@ -91,11 +93,11 @@
 
 ;; Main component
 
-(defn main [app-state]
+(defn main [app-state actions]
   (let [{:keys [current-player active-players passed-players]} @app-state
         current-faction (:faction current-player)]
     [:div.timer-mystica {:class (class-string [(faction-color-class current-faction)
                                                (faction-text-color current-faction)])}
-     [current-player-area current-player]
+     [current-player-area current-player actions]
      [active-players-area active-players]
      [passed-players-area passed-players]]))

@@ -16,9 +16,58 @@
 
 (defonce app-state (r/atom test-data))
 
+; State updates
+
+(defn player-selected-next [{:keys [current-player active-players]
+                             :as   state}]
+  (if (empty? active-players)
+    state
+    (assoc state :current-player (first active-players)
+                 :active-players (-> active-players (subvec 1) (conj current-player)))))
+
+(defn player-selected-pass [{:keys [current-player active-players passed-players round]
+                             :as   state}]
+  (if (seq active-players)
+    (assoc state :current-player (first active-players)
+                 :active-players (subvec active-players 1)
+                 :passed-players (conj passed-players current-player))
+    (assoc state :current-player (first passed-players)
+                 :active-players (-> passed-players (subvec 1) (conj current-player))
+                 :passed-players []
+                 :round (inc round)
+                 :between-rounds? true)))
+
+(defn advance-time [{:keys [between-rounds?] :as state}
+                    ms]
+  (if between-rounds?
+    state
+    (update-in state [:current-player :time-used-ms] + ms)))
+
+; Add components with Reagent
+
 (when-let [app-container (.getElementById js/document "app")]
-  (r/render-component [components/main app-state]
+  (r/render-component [components/main app-state
+                       {:on-next #(swap! app-state player-selected-next)
+                        :on-pass #(swap! app-state player-selected-pass)}]
                       app-container))
+
+; Call advance-time on ticks
+
+(defn current-time-ms []
+  (.getTime (js/Date.)))
+
+(defonce advance-to-current-time
+         (let [last-time-ms (atom (current-time-ms))]
+           (fn []
+             (let [time (current-time-ms)
+                   delta (- time @last-time-ms)]
+               (reset! last-time-ms time)
+               (swap! app-state advance-time delta)))))
+
+(defonce start-timer
+         ((fn request-frame []
+            (advance-to-current-time)
+            (.requestAnimationFrame js/window request-frame))))
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on

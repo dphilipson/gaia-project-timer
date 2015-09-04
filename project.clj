@@ -19,14 +19,13 @@
   :cljsbuild {
     :builds [{:id "dev"
               :source-paths ["src"]
-
               :figwheel { :on-jsload "timer-mystica.core/on-js-reload" }
-
               :compiler {:main timer-mystica.core
                          :asset-path "js/compiled/out"
                          :output-to "resources/public/js/compiled/timer_mystica.js"
                          :output-dir "resources/public/js/compiled/out"
-                         :source-map-timestamp true }}
+                         :source-map-timestamp true
+                         :cache-analysis true}}
              {:id "test"
               :source-paths ["src" "test"]
               :compiler {:output-to "resources/public/js/test/test.js"
