@@ -1,8 +1,6 @@
-(ns ^:figwheel-always timer-mystica.test-runner
+(ns timer-mystica.test-formatter
   (:require
-    [cljs.test :as test :include-macros true :refer [report]]
-    [timer-mystica.core-test]
-    [figwheel.client :as fw]))
+    [cljs.test :as test :include-macros true :refer [report]]))
 
 (enable-console-print!)
 
@@ -37,15 +35,3 @@
   (if (< 0 (+ (:fail m) (:error m)))
     (show-failure)
     (show-success)))
-
-(defn runner []
-  (test/run-tests
-    'timer-mystica.core-test))
-
-(defonce first-run (runner))
-
-(fw/start {
-           :websocket-url "ws://localhost:3449/figwheel-ws"
-           ;; :autoload false
-           :build-id "test"
-           :on-jsload (fn [] (runner))})
