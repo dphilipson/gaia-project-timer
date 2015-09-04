@@ -43,6 +43,32 @@
     (map str/capitalize)
     (str/join " ")))
 
+;; Meta buttons
+
+(defn undo-button [{:keys [history history-index]} on-undo]
+  (let [disabled-class (if (pos? history-index) nil :disabled)]
+    [:button.undo-button.btn.btn-default {:class disabled-class :on-click on-undo}
+     [:span.glyphicon.glyphicon-step-backward]]))
+
+(defn redo-button [{:keys [history history-index]} on-redo]
+  (let [disabled-class (if (< history-index (dec (count history)))
+                         nil
+                         :disabled)]
+    [:button.redo-button.btn.btn-default {:class disabled-class :on-click on-redo}
+     [:span.glyphicon.glyphicon-step-forward]]))
+
+(defn pause-button [{:keys [paused?]} {:keys [on-pause on-resume]}]
+  (let [action (if paused? on-resume on-pause)
+        glyphicon (if paused? :glyphicon-play :glyphicon-pause)]
+    [:button.pause-button.btn.btn-default {:on-click action}
+     [:span.glyphicon {:class glyphicon}]]))
+
+(defn meta-button-area [state {:keys [on-undo on-redo] :as actions}]
+  [:div.meta-button-area
+   [undo-button state on-undo]
+   [redo-button state on-redo]
+   [pause-button state actions]])
+
 ;; Clock
 
 (defn format-time [ms]
@@ -59,7 +85,8 @@
 ;; Buttons
 
 (defn start-round-button [round on-start-round]
-  [:button.start-round-button.btn.btn-primary.btn-lg {:on-click on-start-round} (str "Start Round " round)])
+  (let [text (str "Start Round " round)]
+    [:button.start-round-button.btn.btn-primary.btn-lg {:on-click on-start-round} text]))
 
 (defn game-over-button []
   [:button.game-over-button.btn.btn-primary.btn-lg.disabled "Game Over"])
@@ -126,6 +153,7 @@
         current-faction (:faction current-player)]
     [:div.timer-mystica {:class (class-string [(faction-color-class current-faction)
                                                (faction-text-color current-faction)])}
+     [meta-button-area state actions]
      [current-player-area state actions]
      [active-players-area active-players]
      [passed-players-area passed-players]]))

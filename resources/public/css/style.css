@@ -18,6 +18,31 @@
     bottom: 0;
 }
 
+.meta-button-area {
+    margin-top: 16px;
+
+    display: flex;
+    display: -webkit-flex;
+
+    flex-direction: row;
+    -webkit-flex-direction: row;
+
+    justify-content: flex-end;
+    -webkit-justify-content: flex-end;
+}
+
+.pause-button {
+    margin-right: 16px;
+}
+
+.redo-button {
+    margin-right: 24px;
+}
+
+.undo-button {
+    margin-right: 6px;
+}
+
 .current-player-area {
     flex: 1;
     -webkit-flex: 1;
