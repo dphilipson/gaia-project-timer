@@ -12,7 +12,9 @@
    :active-players [{:faction :dwarves :time-used-ms 128000}
                     {:faction :nomads :time-used-ms 777000}]
    :passed-players [{:faction :darklings :time-used-ms 123000}
-                    {:faction :ice-maidens :time-used-ms 345000}]})
+                    {:faction :ice-maidens :time-used-ms 345000}]
+   :between-rounds? false
+   :round 2})
 
 (defonce app-state (r/atom test-data))
 

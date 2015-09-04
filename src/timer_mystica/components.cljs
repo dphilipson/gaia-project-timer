@@ -11,26 +11,26 @@
 ;; Faction info
 
 (def faction-color-class
-  {:auren :green
-   :witches :green
-   :alchemists :black
-   :darklings :black
-   :halflings :brown
-   :cultists :brown
-   :engineers :gray
-   :dwarves :gray
-   :mermaids :blue
-   :swarmlings :blue
+  {:auren           :green
+   :witches         :green
+   :alchemists      :black
+   :darklings       :black
+   :halflings       :brown
+   :cultists        :brown
+   :engineers       :gray
+   :dwarves         :gray
+   :mermaids        :blue
+   :swarmlings      :blue
    :chaos-magicians :red
-   :giants :red
-   :fakirs :yellow
-   :nomads :yellow
-   :ice-maidens :white
-   :yetis :white
-   :dragonlords :orange
-   :acolytes :orange
-   :changelings :variable
-   :riverwalkers :variable})
+   :giants          :red
+   :fakirs          :yellow
+   :nomads          :yellow
+   :ice-maidens     :white
+   :yetis           :white
+   :dragonlords     :orange
+   :acolytes        :orange
+   :changelings     :variable
+   :riverwalkers    :variable})
 
 (defn faction-text-color [faction]
   (if (= (faction-color-class faction) :black)
@@ -56,16 +56,39 @@
   [:div.clock-area
    [:p.clock (format-time time-used-ms)]])
 
+;; Buttons
+
+(defn start-round-button [round on-start-round]
+  [:button.start-round-button.btn.btn-primary.btn-lg {:on-click on-start-round} (str "Start Round " round)])
+
+(defn pass-button [on-pass]
+  [:button.pass-button.btn.btn-default.btn-lg {:on-click on-pass} "Pass"])
+
+(defn last-player-next-button []
+  [:button.next-button.btn.btn-primary.btn-lg.disabled "Last Player"])
+
+(defn next-button [on-next]
+  [:button.next-button.btn.btn-primary.btn-lg {:on-click on-next} "Next Player"])
+
+(defn button-area [{:keys [between-rounds? round active-players]}
+                   {:keys [on-start-round on-pass on-next]}]
+  [:div.button-area
+   (if between-rounds?
+     [start-round-button round  on-start-round]
+     (list ^{:key :pass-button} [pass-button on-pass]
+           (if (seq active-players)
+             ^{:key :next-button} [next-button on-next]
+             ^{:key :last-player-next-button} [last-player-next-button])))])
+
 ;; Current player area
 
-(defn current-player-area [{:keys [faction time-used-ms]}
-                           {:keys [on-next on-pass]}]
+(defn current-player-area [{{:keys [faction time-used-ms]} :current-player
+                            :as                            state}
+                           actions]
   [:div.current-player-area {:class (faction-text-color faction)}
    [:p.active-faction-label (faction-name faction)]
    [main-clock time-used-ms]
-   [:div.button-area
-    [:button.pass-button.btn.btn-default.btn-lg {:on-click on-pass} "Pass"]
-    [:button.done-button.btn.btn-primary.btn-lg {:on-click on-next} "Next Player"]]])
+   [button-area state actions]])
 
 ;; Active player area
 
@@ -94,10 +117,11 @@
 ;; Main component
 
 (defn main [app-state actions]
-  (let [{:keys [current-player active-players passed-players]} @app-state
+  (let [{:keys [current-player active-players passed-players]
+         :as   state} @app-state
         current-faction (:faction current-player)]
     [:div.timer-mystica {:class (class-string [(faction-color-class current-faction)
                                                (faction-text-color current-faction)])}
-     [current-player-area current-player actions]
+     [current-player-area state actions]
      [active-players-area active-players]
      [passed-players-area passed-players]]))
