@@ -45,20 +45,22 @@
 
 ;; Meta buttons
 
-(defn undo-button [{:keys [history history-index]} on-undo]
-  (let [disabled-class (if (pos? history-index) nil :disabled)]
-    [:button.undo-button.btn.btn-default {:class disabled-class :on-click on-undo}
+(defn undo-button [{:keys [history-index]} on-undo]
+  (let [enabled? (pos? history-index)
+        action (if enabled? on-undo nil)
+        disabled-class (if enabled? nil :disabled)]
+    [:button.undo-button.btn.btn-default {:class disabled-class :on-click action}
      [:span.glyphicon.glyphicon-step-backward]]))
 
 (defn redo-button [{:keys [history history-index]} on-redo]
-  (let [disabled-class (if (< history-index (dec (count history)))
-                         nil
-                         :disabled)]
-    [:button.redo-button.btn.btn-default {:class disabled-class :on-click on-redo}
+  (let [enabled? (< history-index (count history))
+        action (if enabled? on-redo nil)
+        disabled-class (if enabled? nil :disabled)]
+    [:button.redo-button.btn.btn-default {:class disabled-class :on-click action}
      [:span.glyphicon.glyphicon-step-forward]]))
 
-(defn pause-button [{:keys [paused?]} {:keys [on-pause on-resume]}]
-  (let [action (if paused? on-resume on-pause)
+(defn pause-button [{:keys [paused?]} {:keys [on-pause on-unpause]}]
+  (let [action (if paused? on-unpause on-pause)
         glyphicon (if paused? :glyphicon-play :glyphicon-pause)]
     [:button.pause-button.btn.btn-default {:on-click action}
      [:span.glyphicon {:class glyphicon}]]))
@@ -114,12 +116,12 @@
 ;; Current player area
 
 (defn current-player-area [{{:keys [faction time-used-ms]} :current-player
-                            :as                            state}
+                            :as                            game-state}
                            actions]
   [:div.current-player-area {:class (faction-text-color faction)}
    [:p.active-faction-label (faction-name faction)]
    [main-clock time-used-ms]
-   [button-area state actions]])
+   [button-area game-state actions]])
 
 ;; Active player area
 
@@ -148,12 +150,12 @@
 ;; Main component
 
 (defn main [app-state actions]
-  (let [{:keys [current-player active-players passed-players]
-         :as   state} @app-state
+  (let [{:keys [game-state] :as state} @app-state
+        {:keys [current-player active-players passed-players]} game-state
         current-faction (:faction current-player)]
     [:div.timer-mystica {:class (class-string [(faction-color-class current-faction)
                                                (faction-text-color current-faction)])}
      [meta-button-area state actions]
-     [current-player-area state actions]
+     [current-player-area game-state actions]
      [active-players-area active-players]
      [passed-players-area passed-players]]))

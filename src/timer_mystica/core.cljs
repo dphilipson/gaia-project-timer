@@ -7,54 +7,95 @@
 
 ;; define your app data so that it doesn't get over-written on reload
 
-(def test-data
-  {:current-player {:faction :witches :time-used-ms 301000}
-   :active-players [{:faction :dwarves :time-used-ms 128000}
-                    {:faction :nomads :time-used-ms 777000}]
-   :passed-players [{:faction :darklings :time-used-ms 123000}
-                    {:faction :ice-maidens :time-used-ms 345000}]
-   :between-rounds? false
-   :round 2})
+(defn new-game-state [factions]
+  (let [new-player (fn [faction] {:faction faction :time-used-ms 0})]
+    {:history []
+     :history-index 0
+     :paused? false
+     :game-state {:current-player (new-player (first factions))
+                  :active-players (mapv new-player (rest factions))
+                  :passed-players []
+                  :between-rounds? true
+                  :round 1}}))
 
-(defonce app-state (r/atom test-data))
+(defonce app-state (r/atom (new-game-state [:witches
+                                            :dwarves
+                                            :nomads
+                                            :darklings
+                                            :ice-maidens])))
 
-; State updates
+; Game-state updates
 
 (defn player-selected-next [{:keys [current-player active-players]
-                             :as   state}]
+                             :as   game-state}]
   (if (empty? active-players)
-    state
-    (assoc state :current-player (first active-players)
-                 :active-players (-> active-players (subvec 1) (conj current-player)))))
+    game-state
+    (assoc game-state :current-player (first active-players)
+                      :active-players (-> active-players (subvec 1) (conj current-player)))))
 
 (defn player-selected-pass [{:keys [current-player active-players passed-players round]
-                             :as   state}]
+                             :as   game-state}]
   (if (seq active-players)
-    (assoc state :current-player (first active-players)
-                 :active-players (subvec active-players 1)
-                 :passed-players (conj passed-players current-player))
-    (assoc state :current-player (first passed-players)
-                 :active-players (-> passed-players (subvec 1) (conj current-player))
-                 :passed-players []
-                 :round (inc round)
-                 :between-rounds? true)))
+    (assoc game-state :current-player (first active-players)
+                      :active-players (subvec active-players 1)
+                      :passed-players (conj passed-players current-player))
+    (assoc game-state :current-player (first passed-players)
+                      :active-players (-> passed-players (subvec 1) (conj current-player))
+                      :passed-players []
+                      :round (inc round)
+                      :between-rounds? true)))
 
-(defn advance-time [{:keys [between-rounds?] :as state}
+(defn advance-time [{{:keys [between-rounds?]} :game-state
+                     :keys                     [paused?]
+                     :as                       state}
                     ms]
-  (if between-rounds?
+  (if (or between-rounds? paused?)
     state
-    (update-in state [:current-player :time-used-ms] + ms)))
+    (update-in state [:game-state :current-player :time-used-ms] + ms)))
 
-(defn start-round [state]
-  (assoc state :between-rounds? false))
+(defn start-round [game-state]
+  (assoc game-state :between-rounds? false))
+
+; History
+
+(defn update-game-state-add-history
+  [{:keys [game-state history history-index] :as state} f & args]
+  (assoc state :game-state (apply f game-state args)
+               :history (-> history (subvec 0 history-index) (conj game-state))
+               :history-index (inc history-index)))
+
+(defn undo [{:keys [game-state history history-index] :as state}]
+  (assoc state :history (if (= (count history) history-index)
+                          (conj history game-state)
+                          history)
+               :history-index (dec history-index)
+               :game-state (history (dec history-index))))
+
+(defn redo [{:keys [history history-index] :as state}]
+  (let [new-index (inc history-index)
+        history-size (count history)]
+    (assoc state :history (if (= new-index (dec history-size))
+                            (subvec history 0 (dec history-size))
+                            history)
+                 :history-index new-index
+                 :game-state (history new-index))))
+
+; Side-effecting actions
+
+(defn swap-game-state-add-history! [f & args]
+  (apply swap! app-state update-game-state-add-history f args))
 
 ; Add components with Reagent
 
 (when-let [app-container (.getElementById js/document "app")]
   (r/render-component [components/main app-state
-                       {:on-start-round #(swap! app-state start-round)
-                        :on-next #(swap! app-state player-selected-next)
-                        :on-pass #(swap! app-state player-selected-pass)}]
+                       {:on-start-round #(swap-game-state-add-history! start-round)
+                        :on-next        #(swap-game-state-add-history! player-selected-next)
+                        :on-pass        #(swap-game-state-add-history! player-selected-pass)
+                        :on-pause       #(swap! app-state assoc :paused? true)
+                        :on-unpause     #(swap! app-state assoc :paused? false)
+                        :on-undo        #(swap! app-state undo)
+                        :on-redo        #(swap! app-state redo)}]
                       app-container))
 
 ; Call advance-time on ticks
@@ -80,4 +121,3 @@
   ;; your application
   ;; (swap! app-state update-in [:__figwheel_counter] inc)
   )
-
