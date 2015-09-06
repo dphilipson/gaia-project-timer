@@ -16,6 +16,7 @@
     top: 0;
     right: 0;
     bottom: 0;
+    padding-bottom: 20px;
 }
 
 .meta-button-area {
@@ -196,4 +197,17 @@
 
 .text-dark {
     color: black;
+}
+
+/* Setup */
+
+.faction-select-wrapper {
+    padding-top: 16px;
+    padding-left: 8px;
+    padding-right: 8px;
+    text-align: center;
+}
+
+.faction-select-wrapper>* {
+    margin-bottom: 16px;
 }

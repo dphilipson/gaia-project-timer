@@ -10,6 +10,12 @@
 
 ;; Faction info
 
+(def factions
+  [:auren :witches :alchemists :darklings :halflings :cultists
+   :engineers :dwarves :mermaids :swarmlings :chaos-magicians :giants
+   :fakirs :nomads :ice-maidens :yetis :dragonlords :acolytes
+   :changelings :riverwalkers])
+
 (def faction-color-class
   {:auren           :green
    :witches         :green
@@ -147,10 +153,10 @@
      (for [player passed-players]
        ^{:key (:faction player)} [player-list-item player])]))
 
-;; Main component
+;; Game component
 
-(defn main [app-state actions]
-  (let [{:keys [game-state] :as state} @app-state
+(defn game [state actions]
+  (let [{:keys [game-state]} state
         {:keys [current-player active-players passed-players]} game-state
         current-faction (:faction current-player)]
     [:div.timer-mystica {:class (class-string [(faction-color-class current-faction)
@@ -159,3 +165,44 @@
      [current-player-area game-state actions]
      [active-players-area active-players]
      [passed-players-area passed-players]]))
+
+;; Setup component
+
+(defn faction-select [id]
+  [:select.form-control {:id id}
+   [:option "<None>"]
+   (for [faction factions]
+     ^{:key faction} [:option (faction-name faction)])])
+
+(defn get-faction-for-player [i]
+  (let [id (str "player-select-" i)
+        select-elem (.getElementById js/document id)
+        index (.-selectedIndex select-elem)]
+    (if (= index 0)
+      nil
+      (factions (dec index)))))
+
+(defn get-selected-factions []
+  (->> (range 5)
+       (map get-faction-for-player)
+       (filter identity)))
+
+(defn start-game-button [on-start-game]
+  [:button.start-game-button.btn.btn-primary.btn-lg
+   {:on-click (comp on-start-game get-selected-factions)}
+   "Start Game"])
+
+(defn setup [on-start-game]
+  [:div.timer-mystica
+   [:div.faction-select-wrapper
+    (for [i (range 5)]
+      ^{:key i} [faction-select (str "player-select-" i)])
+    [start-game-button on-start-game]]])
+
+;; Main component
+
+(defn main [app-state actions]
+  (let [{:keys [mode] :as state} @app-state]
+    (case mode
+      :game [game state actions]
+      :setup [setup (:on-start-game actions)])))

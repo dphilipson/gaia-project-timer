@@ -7,9 +7,13 @@
 
 ;; define your app data so that it doesn't get over-written on reload
 
+(def setup-state
+  {:mode :setup})
+
 (defn new-game-state [factions]
   (let [new-player (fn [faction] {:faction faction :time-used-ms 0})]
-    {:history []
+    {:mode :game
+     :history []
      :history-index 0
      :paused? false
      :game-state {:current-player (new-player (first factions))
@@ -18,11 +22,7 @@
                   :between-rounds? true
                   :round 1}}))
 
-(defonce app-state (r/atom (new-game-state [:witches
-                                            :dwarves
-                                            :nomads
-                                            :darklings
-                                            :ice-maidens])))
+(defonce app-state (r/atom setup-state))
 
 ; Game-state updates
 
@@ -95,7 +95,8 @@
                         :on-pause       #(swap! app-state assoc :paused? true)
                         :on-unpause     #(swap! app-state assoc :paused? false)
                         :on-undo        #(swap! app-state undo)
-                        :on-redo        #(swap! app-state redo)}]
+                        :on-redo        #(swap! app-state redo)
+                        :on-start-game  #(reset! app-state (new-game-state %))}]
                       app-container))
 
 ; Call advance-time on ticks
@@ -111,10 +112,12 @@
                (reset! last-time-ms time)
                (swap! app-state advance-time delta)))))
 
-(defonce start-timer
-         ((fn request-frame []
-            (advance-to-current-time)
-            (.requestAnimationFrame js/window request-frame))))
+(defonce timer-did-start
+         (do
+           ((fn request-frame []
+              (advance-to-current-time)
+              (.requestAnimationFrame js/window request-frame)))
+           true))
 
 (defn on-js-reload []
   ;; optionally touch your app-state to force rerendering depending on
