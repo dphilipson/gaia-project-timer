@@ -17,6 +17,8 @@
     right: 0;
     bottom: 0;
     padding-bottom: 20px;
+
+    transition: background 0.25s;
 }
 
 .meta-button-area {
@@ -59,13 +61,14 @@
 
     align-items: center;
     -webkit-align-items: center;
+
+    transition: color 0.25s;
 }
 
 .active-faction-label {
     padding-top: 48px;
     font-size: 24px;
 }
-
 
 .clock-area {
     flex: 1;
