@@ -19,6 +19,7 @@
        :history       []
        :history-index 0
        :paused?       false
+       :last-timestamp-ms nil
        :game-state    {:current-player  (new-player (first factions))
                        :active-players  (mapv new-player (rest factions))
                        :passed-players  []
@@ -53,16 +54,18 @@
                       :round (inc round)
                       :between-rounds? true)))
 
-(defn advance-time [{{:keys [between-rounds?]} :game-state
-                     :keys                     [paused?]
-                     :as                       state}
-                    ms]
-  (if (or between-rounds? paused?)
-    state
-    (update-in state [:game-state :current-player :time-used-ms] + ms)))
-
 (defn start-round [game-state]
   (assoc game-state :between-rounds? false))
+
+(defn advance-to-time [{:keys [paused? last-timestamp-ms game-state] :as state} timestamp-ms]
+  (let [{:keys [between-rounds?]} game-state
+        time-passed-ms (if last-timestamp-ms
+                         (- timestamp-ms last-timestamp-ms)
+                         0)
+        new-time-state (assoc state :last-timestamp-ms timestamp-ms)]
+    (if (or between-rounds? paused?)
+      new-time-state
+      (update-in new-time-state [:game-state :current-player :time-used-ms] + time-passed-ms))))
 
 ; History
 
@@ -129,23 +132,15 @@
                         :on-reset       #(clear-state-request-confirm!)}]
                       app-container))
 
-; Call advance-time on ticks
+; Call advance-to-time on ticks
 
 (defn current-time-ms []
   (.getTime (js/Date.)))
 
-(defonce advance-to-current-time
-         (let [last-time-ms (atom (current-time-ms))]
-           (fn []
-             (let [time (current-time-ms)
-                   delta (- time @last-time-ms)]
-               (reset! last-time-ms time)
-               (swap! app-state advance-time delta)))))
-
 (defonce timer-did-start
          (do
            ((fn request-frame []
-              (advance-to-current-time)
+              (swap! app-state advance-to-time (current-time-ms))
               (js/requestAnimationFrame request-frame)))
            true))
 

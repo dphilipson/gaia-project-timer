@@ -71,32 +71,52 @@
                                      :between-rounds? true)]
       (is (= updated-state expected-state)))))
 
-(deftest test-advance-time
-  (testing "Add to current player when in play"
+(deftest test-advance-to-time
+  (testing "Should add to current player when in play"
     (let [initial-state (meta-state :paused? false
+                                    :last-timestamp-ms 1000
+                                    :game-state
+                                    (game-state :current-player {:faction      :witches
+                                                                 :time-used-ms 200}
+                                                :between-rounds? false))
+          updated-state (tm/advance-to-time initial-state 1300)
+          expected-state (meta-state :paused? false
+                                     :last-timestamp-ms 1300
+                                     :game-state
+                                     (game-state :current-player {:faction      :witches
+                                                                  :time-used-ms 500}
+                                                 :between-rounds? false))]
+      (is (= updated-state expected-state))))
+  (testing "Should not update player time on first update"
+    (let [initial-state (meta-state :paused? false
+                                    :last-timestamp-ms nil
                                     :game-state
                                     (game-state :current-player {:faction      :witches
                                                                  :time-used-ms 300}
-                                                :between-rounds?) false)
-          updated-state (tm/advance-time initial-state 200)
-          expected-state (assoc-in initial-state [:game-state :current-player :time-used-ms] 500)]
+                                                :between-rounds? false))
+          updated-state (tm/advance-to-time initial-state 1300)
+          expected-state (assoc initial-state :last-timestamp-ms 1300)]
       (is (= updated-state expected-state))))
-  (testing "Don't add to time when between rounds"
+  (testing "Should not add to time when paused"
+    (let [initial-state (meta-state :paused? true
+                                    :last-timestamp-ms 1000
+                                    :game-state
+                                    (game-state :current-player {:faction      :witches
+                                                                 :time-used-ms 300}
+                                                :between-rounds? false))
+          updated-state (tm/advance-to-time initial-state 1300)
+          expected-state (assoc initial-state :last-timestamp-ms 1300)]
+      (is (= updated-state expected-state))))
+  (testing "Should not add to time when between rounds"
     (let [initial-state (meta-state :paused? false
+                                    :last-timestamp-ms 1000
                                     :game-state
                                     (game-state :current-player {:faction      :witches
                                                                  :time-used-ms 300}
                                                 :between-rounds? true))
-          updated-state (tm/advance-time initial-state 200)]
-      (is (= updated-state initial-state))))
-  (testing "Don't add to time when paused"
-    (let [initial-state (meta-state :paused? true
-                                    :game-state
-                                    (game-state :current-player {:faction      :witches
-                                                                 :time-used-ms 300}
-                                                :between-rounds?) false)
-          updated-state (tm/advance-time initial-state 300)]
-      (is (= updated-state initial-state)))))
+          updated-state (tm/advance-to-time initial-state 1300)
+          expected-state (assoc initial-state :last-timestamp-ms 1300)]
+      (is (= updated-state expected-state)))))
 
 (deftest test-start-round
   (let [initial-state (game-state :between-rounds? true)
