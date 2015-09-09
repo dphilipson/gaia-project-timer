@@ -1,7 +1,8 @@
 (ns ^:figwheel-always timer-mystica.core
   (:require
     [reagent.core :as r]
-    [timer-mystica.components :as components]))
+    [timer-mystica.components :as components]
+    [cljs.reader :as reader]))
 
 (enable-console-print!)
 
@@ -11,18 +12,25 @@
   {:mode :setup})
 
 (defn new-game-state [factions]
-  (let [new-player (fn [faction] {:faction faction :time-used-ms 0})]
-    {:mode :game
-     :history []
-     :history-index 0
-     :paused? false
-     :game-state {:current-player (new-player (first factions))
-                  :active-players (mapv new-player (rest factions))
-                  :passed-players []
-                  :between-rounds? true
-                  :round 1}}))
+  (if (empty? factions)
+    setup-state
+    (let [new-player (fn [faction] {:faction faction :time-used-ms 0})]
+      {:mode          :game
+       :history       []
+       :history-index 0
+       :paused?       false
+       :game-state    {:current-player  (new-player (first factions))
+                       :active-players  (mapv new-player (rest factions))
+                       :passed-players  []
+                       :between-rounds? true
+                       :round           1}})))
 
-(defonce app-state (r/atom setup-state))
+(def storage-key "tm-state")
+
+(defonce app-state
+         (let [saved-state-edn (.getItem js/localStorage storage-key)
+               saved-state (when saved-state-edn (reader/read-string saved-state-edn))]
+           (r/atom (or saved-state setup-state))))
 
 ; Game-state updates
 
@@ -80,23 +88,45 @@
                  :history-index new-index
                  :game-state (history new-index))))
 
+; Reset
+
+(defn clear-state! []
+  (reset! app-state setup-state)
+  (.clear js/localStorage))
+
+(defn clear-state-request-confirm! []
+  (let [confirmed (js/confirm "Quit current game and return to faction select?")]
+    (when confirmed (clear-state!))))
+
 ; Side-effecting actions
 
-(defn swap-game-state-add-history! [f & args]
-  (apply swap! app-state update-game-state-add-history f args))
+(defn save-state! []
+  (.setItem js/localStorage storage-key (prn-str @app-state)))
+
+(defn swap-state-and-save! [f & args]
+  (apply swap! app-state f args)
+  (save-state!))
+
+(defn reset-state-and-save! [new-state]
+  (reset! app-state new-state)
+  (save-state!))
+
+(defn swap-game-state-push-history-save! [f & args]
+  (apply swap-state-and-save! update-game-state-add-history f args))
 
 ; Add components with Reagent
 
 (when-let [app-container (.getElementById js/document "app")]
   (r/render-component [components/main app-state
-                       {:on-start-round #(swap-game-state-add-history! start-round)
-                        :on-next        #(swap-game-state-add-history! player-selected-next)
-                        :on-pass        #(swap-game-state-add-history! player-selected-pass)
-                        :on-pause       #(swap! app-state assoc :paused? true)
-                        :on-unpause     #(swap! app-state assoc :paused? false)
-                        :on-undo        #(swap! app-state undo)
-                        :on-redo        #(swap! app-state redo)
-                        :on-start-game  #(reset! app-state (new-game-state %))}]
+                       {:on-start-round #(swap-game-state-push-history-save! start-round)
+                        :on-next        #(swap-game-state-push-history-save! player-selected-next)
+                        :on-pass        #(swap-game-state-push-history-save! player-selected-pass)
+                        :on-pause       #(swap-state-and-save! assoc :paused? true)
+                        :on-unpause     #(swap-state-and-save! assoc :paused? false)
+                        :on-undo        #(swap-state-and-save! undo)
+                        :on-redo        #(swap-state-and-save! redo)
+                        :on-start-game  #(reset-state-and-save! (new-game-state %))
+                        :on-reset       #(clear-state-request-confirm!)}]
                       app-container))
 
 ; Call advance-time on ticks
@@ -116,7 +146,7 @@
          (do
            ((fn request-frame []
               (advance-to-current-time)
-              (.requestAnimationFrame js/window request-frame)))
+              (js/requestAnimationFrame request-frame)))
            true))
 
 (defn on-js-reload []

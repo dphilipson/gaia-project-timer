@@ -51,28 +51,34 @@
 
 ;; Meta buttons
 
+(defn reset-button [on-reset]
+  [:button.reset-button.btn.btn-danger.btn-lg {:on-click on-reset}
+   [:span.glyphicon.glyphicon-remove]])
+
 (defn undo-button [{:keys [history-index]} on-undo]
   (let [enabled? (pos? history-index)
         action (if enabled? on-undo nil)
         disabled-class (if enabled? nil :disabled)]
-    [:button.undo-button.btn.btn-default {:class disabled-class :on-click action}
+    [:button.undo-button.btn.btn-default.btn-lg {:class disabled-class :on-click action}
      [:span.glyphicon.glyphicon-step-backward]]))
 
 (defn redo-button [{:keys [history history-index]} on-redo]
   (let [enabled? (< history-index (count history))
         action (if enabled? on-redo nil)
         disabled-class (if enabled? nil :disabled)]
-    [:button.redo-button.btn.btn-default {:class disabled-class :on-click action}
+    [:button.redo-button.btn.btn-default.btn-lg {:class disabled-class :on-click action}
      [:span.glyphicon.glyphicon-step-forward]]))
 
 (defn pause-button [{:keys [paused?]} {:keys [on-pause on-unpause]}]
   (let [action (if paused? on-unpause on-pause)
         glyphicon (if paused? :glyphicon-play :glyphicon-pause)]
-    [:button.pause-button.btn.btn-default {:on-click action}
+    [:button.pause-button.btn.btn-default.btn-lg {:on-click action}
      [:span.glyphicon {:class glyphicon}]]))
 
-(defn meta-button-area [state {:keys [on-undo on-redo] :as actions}]
+(defn meta-button-area [state {:keys [on-reset on-undo on-redo] :as actions}]
   [:div.meta-button-area
+   [reset-button on-reset]
+   [:div.spacer]
    [undo-button state on-undo]
    [redo-button state on-redo]
    [pause-button state actions]])

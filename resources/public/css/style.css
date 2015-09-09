@@ -21,6 +21,8 @@
 
 .meta-button-area {
     margin-top: 16px;
+    margin-left: 16px;
+    margin-right: 16px;
 
     display: flex;
     display: -webkit-flex;
@@ -32,8 +34,9 @@
     -webkit-justify-content: flex-end;
 }
 
-.pause-button {
-    margin-right: 16px;
+.meta-button-area .spacer {
+    flex: 1;
+    -webkit-flex: 1;
 }
 
 .redo-button {
