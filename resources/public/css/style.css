@@ -85,6 +85,10 @@
     font-size: 96px;
 }
 
+.clock-subsecond {
+    font-size: 32px;
+}
+
 .button-area {
     width: 100%;
     padding-bottom: 48px;

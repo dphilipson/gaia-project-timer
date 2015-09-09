@@ -85,16 +85,26 @@
 
 ;; Clock
 
+(defn two-digit-str [n]
+  (if (< n 10)
+    (str "0" n)
+    (str n)))
+
 (defn format-time [ms]
   (let [total-seconds (quot ms 1000)
         minutes (quot total-seconds 60)
         seconds (rem total-seconds 60)
-        seconds-str (if (< seconds 10) (str "0" seconds) (str seconds))]
+        seconds-str (two-digit-str seconds)]
     (str minutes ":" seconds-str)))
+
+(defn subsecond-component [ms]
+  (str "." (-> ms (quot 10) (rem 100) two-digit-str)))
 
 (defn main-clock [time-used-ms]
   [:div.clock-area
-   [:p.clock (format-time time-used-ms)]])
+   [:p
+    [:span.clock (format-time time-used-ms)]
+    [:span.clock-subsecond (subsecond-component time-used-ms)]]])
 
 ;; Buttons
 
