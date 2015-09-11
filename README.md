@@ -60,6 +60,11 @@ get a Browser Connected REPL. An easy way to try it is:
 
 and you should see an alert in the browser window.
 
+You can run the tests by opening your browser at
+[localhost:3449/test.html](http://localhost:3449/test.html). The test results
+are shown in the console and in the color of the favicon, and are automatically
+re-run whenever the source changes.
+
 If `rlwrap` is not installed, then it can be omitted from the above command,
 but you will lose some command line conveniences like history and arrow
 navigation.

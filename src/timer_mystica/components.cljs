@@ -8,6 +8,9 @@
 (defn class-string [classes]
   (->> classes (map name) (str/join " ")))
 
+(def css-transition-group
+  (r/adapt-react-class js/React.addons.CSSTransitionGroup))
+
 ;; Faction info
 
 (def factions
@@ -157,17 +160,21 @@
   (when (seq active-players)
     [:div.active-players-area
      [:p.player-list-label "Next:"]
-     (for [player active-players]
-       ^{:key (:faction player)} [player-list-item player])]))
+     [css-transition-group {:transition-name "slide-up" :transition-leave false}
+      (for [player active-players]
+        ^{:key (:faction player)} [player-list-item player])]]))
 
 ;; Passed player area
 
 (defn passed-players-area [passed-players]
-  (when (seq passed-players)
-    [:div.passed-players-area
-     [:p.player-list-label "Passed:"]
-     (for [player passed-players]
-       ^{:key (:faction player)} [player-list-item player])]))
+  [css-transition-group {:transition-name "slide-up" :transition-leave false}
+   (when (seq passed-players)
+     ^{:key :passed-players-area}
+     [:div.passed-players-area
+      [:p.player-list-label "Passed:"]
+      [css-transition-group {:transition-name "slide-up" :transition-leave false}
+       (for [player passed-players]
+         ^{:key (:faction player)} [player-list-item player])]])])
 
 ;; Game component
 

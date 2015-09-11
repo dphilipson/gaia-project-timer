@@ -7,7 +7,8 @@
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/clojurescript "0.0-3297"]
                  [org.clojure/core.async "0.1.346.0-17112a-alpha"]
-                 [reagent "0.5.0"]]
+                 [reagent "0.5.0" :exclusions [cljsjs/react]]
+                 [cljsjs/react-with-addons "0.12.2-4"]]
 
   :plugins [[lein-cljsbuild "1.0.5"]
             [lein-figwheel "0.3.5"]]

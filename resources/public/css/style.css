@@ -1,3 +1,7 @@
+body {
+    overflow: hidden;
+}
+
 *, p {
     margin: 0;
     padding: 0;
@@ -157,6 +161,18 @@
     font-size: 18px;
     margin-top: 0;
     margin-bottom: 0;
+}
+
+.slide-up-enter {
+    position: relative;
+    opacity: 0.01;
+    top: 24px;
+}
+
+.slide-up-enter.slide-up-enter-active {
+    opacity: 1;
+    top: 0;
+    transition: opacity 0.25s ease-in, top 0.25s ease-in;
 }
 
 /* Faction background colors */
