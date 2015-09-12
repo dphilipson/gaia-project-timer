@@ -160,6 +160,23 @@
           expected-state (meta-state :history [:a :b 10]
                                      :history-index 3
                                      :game-state 7)]
+      (is (= updated-state expected-state))))
+  (testing "It should trim history to max size"
+    (let [initial-state (meta-state :history (vec (range tm/max-history-size))
+                                    :history-index tm/max-history-size
+                                    :game-state :x)
+          updated-state (tm/update-game-state-add-history initial-state identity)
+          expected-state (assoc initial-state
+                           :history (conj (vec (range 1 tm/max-history-size)) :x))]
+      (is (= updated-state expected-state))))
+  (testing "It should not trim if clobbering history"
+    (let [initial-state (meta-state :history (vec (range tm/max-history-size))
+                                    :history-index (dec tm/max-history-size)
+                                    :game-state :x)
+          updated-state (tm/update-game-state-add-history initial-state identity)
+          expected-state (meta-state :history (conj (vec (range (dec tm/max-history-size))) :x)
+                                     :history-index tm/max-history-size
+                                     :game-state :x)]
       (is (= updated-state expected-state)))))
 
 (deftest test-undo

@@ -69,11 +69,20 @@
 
 ; History
 
+(def max-history-size 300)
+
+(defn trim-history [{:keys [history history-index] :as state}]
+  (let [trim-amount (max 0 (- (count history) max-history-size))]
+    (assoc state :history (subvec history trim-amount)
+                 :history-index (- history-index trim-amount))))
+
 (defn update-game-state-add-history
   [{:keys [game-state history history-index] :as state} f & args]
-  (assoc state :game-state (apply f game-state args)
-               :history (-> history (subvec 0 history-index) (conj game-state))
-               :history-index (inc history-index)))
+  (-> state
+      (assoc :game-state (apply f game-state args)
+             :history (-> history (subvec 0 history-index) (conj game-state))
+             :history-index (inc history-index))
+      trim-history))
 
 (defn undo [{:keys [game-state history history-index] :as state}]
   (assoc state :history (if (= (count history) history-index)
