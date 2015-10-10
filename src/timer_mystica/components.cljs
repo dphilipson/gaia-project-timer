@@ -17,7 +17,7 @@
   [:auren :witches :alchemists :darklings :halflings :cultists
    :engineers :dwarves :mermaids :swarmlings :chaos-magicians :giants
    :fakirs :nomads :ice-maidens :yetis :dragonlords :acolytes
-   :changelings :riverwalkers])
+   :shapeshifters :riverwalkers])
 
 (def faction-color-class
   {:auren           :green
@@ -38,7 +38,7 @@
    :yetis           :white
    :dragonlords     :orange
    :acolytes        :orange
-   :changelings     :variable
+   :shapeshifters   :variable
    :riverwalkers    :variable})
 
 (defn faction-text-color [faction]
