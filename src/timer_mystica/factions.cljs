@@ -30,11 +30,14 @@
    :shapeshifters   :variable
    :riverwalkers    :variable})
 
+(def variable-faction-colors
+  [:green :black :brown :gray :blue :red :yellow])
+
 (defn title [faction]
   (->>
     (-> faction name (str/split "-"))
     (map str/capitalize)
     (str/join " ")))
 
-(defn is-variable [faction]
+(defn variable? [faction]
   (= (color faction) :variable))

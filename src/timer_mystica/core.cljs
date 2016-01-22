@@ -15,12 +15,12 @@
 (defonce app-state-atom
          (let [saved-state-edn (.getItem js/localStorage storage-key)
                saved-state (when saved-state-edn (reader/read-string saved-state-edn))]
-           (r/atom (or saved-state setup/new-setup-state))))
+           (r/atom (or saved-state setup/initial-state))))
 
 ; Reset
 
 (defn clear-state! []
-  (reset! app-state-atom setup/new-setup-state)
+  (reset! app-state-atom setup/initial-state)
   (.clear js/localStorage))
 
 (defn clear-state-request-confirm! []

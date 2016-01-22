@@ -2,7 +2,7 @@
   (:require
     [cljs.test :refer-macros [deftest testing is]]
     [figwheel.client :as fw]
-    [timer-mystica.core :as tm]
+    [timer-mystica.setup-test]
     [timer-mystica.game-test]
     [timer-mystica.test-formatter]))
 
