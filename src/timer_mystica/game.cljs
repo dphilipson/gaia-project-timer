@@ -1,14 +1,14 @@
 (ns timer-mystica.game)
 
-(defn new-game-state [factions]
-  (let [new-player (fn [faction] {:faction faction :time-used-ms 0})]
+(defn new-game-state [players]
+  (let [new-player #(assoc % :time-used-ms 0)]
     {:mode              :game
      :history           []
      :history-index     0
      :paused?           false
      :last-timestamp-ms nil
-     :game-state        {:current-player  (new-player (first factions))
-                         :active-players  (mapv new-player (rest factions))
+     :game-state        {:current-player  (new-player (first players))
+                         :active-players  (mapv new-player (rest players))
                          :passed-players  []
                          :between-rounds? true
                          :round           1}}))

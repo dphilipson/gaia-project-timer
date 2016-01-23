@@ -27,17 +27,21 @@
   (let [confirmed (js/confirm "Quit current game and return to faction select?")]
     (when confirmed (clear-state!))))
 
+; Setup to Game transition
+
+(defn new-game-from-setup [setup-state]
+  (game/new-game-state (setup/get-players setup-state)))
+
 ; Side-effecting actions
 
 (defn save-state! []
   (.setItem js/localStorage storage-key (prn-str @app-state-atom)))
 
-(defn swap-state-and-save! [f & args]
-  (apply swap! app-state-atom f args)
-  (save-state!))
+(defn swap-state! [f & args]
+  (apply swap! app-state-atom f args))
 
-(defn reset-state-and-save! [new-state]
-  (reset! app-state-atom new-state)
+(defn swap-state-and-save! [f & args]
+  (apply swap-state! f args)
   (save-state!))
 
 (defn swap-game-state-push-history-save! [f & args]
@@ -49,14 +53,17 @@
   (r/render-component
     [components/main
      app-state-atom
-     {:on-start-round #(swap-game-state-push-history-save! game/start-round)
+     {:on-set-faction (partial swap-state! setup/set-faction)
+      :on-set-color   (partial swap-state! setup/set-color)
+      :on-start-game  #(swap-state! new-game-from-setup)
+
+      :on-start-round #(swap-game-state-push-history-save! game/start-round)
       :on-next        #(swap-game-state-push-history-save! game/player-selected-next)
       :on-pass        #(swap-game-state-push-history-save! game/player-selected-pass)
       :on-pause       #(swap-state-and-save! assoc :paused? true)
       :on-unpause     #(swap-state-and-save! assoc :paused? false)
       :on-undo        #(swap-state-and-save! game/undo)
       :on-redo        #(swap-state-and-save! game/redo)
-      :on-start-game  #(reset-state-and-save! (game/new-game-state %))
       :on-reset       #(clear-state-request-confirm!)}]
     app-container))
 
@@ -68,7 +75,7 @@
 (defonce timer-did-start
          (do
            ((fn request-frame []
-              (swap! app-state-atom game/advance-to-time (current-time-ms))
+              (swap-state! game/advance-to-time (current-time-ms))
               (js/requestAnimationFrame request-frame)))
            true))
 

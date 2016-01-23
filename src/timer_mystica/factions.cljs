@@ -39,5 +39,11 @@
     (map str/capitalize)
     (str/join " ")))
 
+(defn from-title [title]
+  (-> title
+      str/lower-case
+      (str/replace " " "-")
+      keyword))
+
 (defn variable? [faction]
   (= (color faction) :variable))

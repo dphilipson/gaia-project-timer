@@ -3,8 +3,8 @@
     [timer-mystica.factions :as factions]
     [timer-mystica.component-helpers :as helpers]))
 
-(defn faction-text-color [faction]
-  (if (= (factions/color faction) :black)
+(defn text-color-for-background [background-color]
+  (if (= background-color :black)
     :text-light
     :text-dark))
 
@@ -96,19 +96,19 @@
 
 ;; Current player area
 
-(defn current-player-area [{{:keys [faction time-used-ms]} :current-player
+(defn current-player-area [{{:keys [faction color time-used-ms]} :current-player
                             :as                            game-state}
                            actions]
-  [:div.current-player-area {:class (faction-text-color faction)}
+  [:div.current-player-area {:class (text-color-for-background color)}
    [:p.active-faction-label (factions/title faction)]
    [main-clock time-used-ms]
    [button-area game-state actions]])
 
 ;; Active player area
 
-(defn player-list-item [{:keys [faction time-used-ms]}]
-  [:div.player-item {:class (helpers/class-string [(factions/color faction)
-                                                   (faction-text-color faction)])}
+(defn player-list-item [{:keys [faction color time-used-ms]}]
+  [:div.player-item {:class (helpers/class-string [color
+                                                   (text-color-for-background color)])}
    [:p.faction-label (factions/title faction)]
    [:p.timer (format-time time-used-ms)]])
 
@@ -137,9 +137,9 @@
 (defn main [state actions]
   (let [{:keys [game-state]} state
         {:keys [current-player active-players passed-players]} game-state
-        current-faction (:faction current-player)]
-    [:div.timer-mystica {:class (helpers/class-string [(factions/color current-faction)
-                                                       (faction-text-color current-faction)])}
+        current-color (:color current-player)]
+    [:div.timer-mystica {:class (helpers/class-string [current-color
+                                                       (text-color-for-background current-color)])}
      [meta-button-area state actions]
      [current-player-area game-state actions]
      [active-players-area active-players]

@@ -6,5 +6,5 @@
 (defn main [app-state-atom actions]
   (let [{:keys [mode] :as state} @app-state-atom]
     (case mode
-      :setup [setup/main (:on-start-game actions)]
+      :setup [setup/main state actions]
       :game [game/main state actions])))
