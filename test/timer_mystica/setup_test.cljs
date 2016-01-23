@@ -101,7 +101,7 @@
                            {:type    :same-color
                             :color   :gray
                             :indices [1 3]}]]
-      (is (every? #(some #{%} expected-errors) errors))))
+      (is (every? #(some #{%} errors) expected-errors))))
   (testing "It should report multiple players in variable factions"
     (let [state {:mode :setup
                  :players [(shapeshifters :green) (riverwalkers :red) witches nil nil]}
