@@ -31,7 +31,7 @@
   (->> (range max-players)
        (group-by #(get-in state [:players % :color]))
        (filter (fn [[color indices]]
-                 (and color (> (count indices) 2))))
+                 (and color (> (count indices) 1))))
        (map (fn [[color indices]]
               {:type    :same-color
                :color   color

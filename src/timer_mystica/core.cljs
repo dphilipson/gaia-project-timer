@@ -56,6 +56,7 @@
      {:on-set-faction (partial swap-state! setup/set-faction)
       :on-set-color   (partial swap-state! setup/set-color)
       :on-start-game  #(swap-state! new-game-from-setup)
+      :validate-setup #(setup/get-errors @app-state-atom)
 
       :on-start-round #(swap-game-state-push-history-save! game/start-round)
       :on-next        #(swap-game-state-push-history-save! game/player-selected-next)
@@ -69,13 +70,18 @@
 
 ; Call advance-to-time on ticks
 
+(defn should-advance-time? []
+  (let [{:keys [mode paused?]} @app-state-atom]
+    (and (= mode :game) (not paused?))))
+
 (defn current-time-ms []
   (.getTime (js/Date.)))
 
 (defonce timer-did-start
          (do
            ((fn request-frame []
-              (swap-state! game/advance-to-time (current-time-ms))
+              (if (should-advance-time?)
+                (swap-state! game/advance-to-time (current-time-ms)))
               (js/requestAnimationFrame request-frame)))
            true))
 
