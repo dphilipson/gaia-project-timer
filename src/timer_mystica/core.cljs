@@ -10,18 +10,27 @@
 
 ;; define your app data so that it doesn't get over-written on reload
 
-(def storage-key "tm-state")
+(def schema-version 1)
+(def schema-key "tm-schema-version")
+(def state-key "tm-state")
+
+(defn update-version-clear-state-if-wrong! []
+  (let [saved-schema-version (.getItem js/localStorage schema-key)]
+    (when (not= saved-schema-version schema-version)
+      (.removeItem js/localStorage state-key)
+      (.setItem js/localStorage schema-key schema-version))))
 
 (defonce app-state-atom
-         (let [saved-state-edn (.getItem js/localStorage storage-key)
-               saved-state (when saved-state-edn (reader/read-string saved-state-edn))]
-           (r/atom (or saved-state setup/initial-state))))
+         (do (update-version-clear-state-if-wrong!)
+             (let [saved-state-edn (.getItem js/localStorage state-key)
+                   saved-state (when saved-state-edn (reader/read-string saved-state-edn))]
+               (r/atom (or saved-state setup/initial-state)))))
 
 ; Reset
 
 (defn clear-state! []
   (reset! app-state-atom setup/initial-state)
-  (.clear js/localStorage))
+  (.removeItem js/localStorage state-key))
 
 (defn clear-state-request-confirm! []
   (let [confirmed (js/confirm "Quit current game and return to faction select?")]
@@ -35,7 +44,7 @@
 ; Side-effecting actions
 
 (defn save-state! []
-  (.setItem js/localStorage storage-key (prn-str @app-state-atom)))
+  (.setItem js/localStorage state-key (prn-str @app-state-atom)))
 
 (defn swap-state! [f & args]
   (apply swap! app-state-atom f args))
