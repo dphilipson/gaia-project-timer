@@ -10,7 +10,7 @@
 
 ;; define your app data so that it doesn't get over-written on reload
 
-(def schema-version 1)
+(def schema-version "1")
 (def schema-key "tm-schema-version")
 (def state-key "tm-state")
 
@@ -79,17 +79,13 @@
 
 ; Call advance-to-time on ticks
 
-(defn should-advance-time? []
-  (let [{:keys [mode paused?]} @app-state-atom]
-    (and (= mode :game) (not paused?))))
-
 (defn current-time-ms []
   (.getTime (js/Date.)))
 
 (defonce timer-did-start
          (do
            ((fn request-frame []
-              (if (should-advance-time?)
+              (if (= (:mode @app-state-atom) :game)
                 (swap-state! game/advance-to-time (current-time-ms)))
               (js/requestAnimationFrame request-frame)))
            true))

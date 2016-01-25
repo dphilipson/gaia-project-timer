@@ -79,5 +79,3 @@
                             history)
                  :history-index new-index
                  :game-state (history new-index))))
-
-; Side-effecting actions
