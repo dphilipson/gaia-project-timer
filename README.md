@@ -15,6 +15,8 @@ given time. By tracking how much time each player has used, you can make your
 friends take shots every seven minutes, or just make fun of them for being
 slow.
 
+![gameplay](https://cloud.githubusercontent.com/assets/1661903/12667350/4adb8cb4-c5ff-11e5-8f82-b38fa3dc39c5.png) ![last_player](https://cloud.githubusercontent.com/assets/1661903/12667351/4adc2a7a-c5ff-11e5-9cee-4d2b1c6c9be7.png) ![faction_select](https://cloud.githubusercontent.com/assets/1661903/12667349/4ad76db4-c5ff-11e5-854d-fabb79a0042d.png)
+
 ## Installation
 
 Timer Mystica is a website designed to be viewed as a full screen app on a
