@@ -1,6 +1,6 @@
-(defproject timer-mystica "0.1.0-SNAPSHOT"
-  :description "A mobile-based game timer for the board game Terra Mystica"
-  :url "https://github.com/dphilipson/timer-mystica"
+(defproject gaia-project-timer "0.1.0-SNAPSHOT"
+  :description "A mobile-based game timer for the board game Gaia Project"
+  :url "https://github.com/dphilipson/gaia-project"
   :license {:name "MIT License"
             :url "https://opensource.org/licenses/MIT"}
 
@@ -22,10 +22,10 @@
   :cljsbuild {
     :builds [{:id "dev"
               :source-paths ["src"]
-              :figwheel { :on-jsload "timer-mystica.core/on-js-reload" }
-              :compiler {:main timer-mystica.core
+              :figwheel { :on-jsload "gaia-project-timer.core/on-js-reload" }
+              :compiler {:main gaia-project-timer.core
                          :asset-path "js/compiled/out"
-                         :output-to "resources/public/js/compiled/timer_mystica.js"
+                         :output-to "resources/public/js/compiled/gaia_project_timer.js"
                          :output-dir "resources/public/js/compiled/out"
                          :source-map-timestamp true
                          :cache-analysis true}}
@@ -34,21 +34,21 @@
               :compiler {:output-to "resources/public/js/test/test.js"
                          :output-dir "resources/public/js/test/out"
                          :optimizations :none
-                         :main timer-mystica.core-test
+                         :main gaia-project-timer.core-test
                          :asset-path "js/test/out"
                          :source-map-timestamp true
                          :cache-analysis true}}
              {:id "min"
               :source-paths ["src"]
-              :compiler {:output-to "resources/public/js/compiled/timer_mystica.js"
-                         :main timer-mystica.core
+              :compiler {:output-to "resources/public/js/compiled/gaia_project_timer.js"
+                         :main gaia-project-timer.core
                          :optimizations :advanced
                          :pretty-print false}}]}
 
   :figwheel {
-             ;; :http-server-root "public" ;; default and assumes "resources" 
+             ;; :http-server-root "public" ;; default and assumes "resources"
              ;; :server-port 3449 ;; default
-             ;; :server-ip "127.0.0.1" 
+             ;; :server-ip "127.0.0.1"
 
              :css-dirs ["resources/public/css"] ;; watch and update CSS
 
@@ -74,5 +74,5 @@
              ;; :repl false
 
              ;; to configure a different figwheel logfile path
-             ;; :server-logfile "tmp/logs/figwheel-logfile.log" 
+             ;; :server-logfile "tmp/logs/figwheel-logfile.log"
              })

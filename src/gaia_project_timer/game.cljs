@@ -1,4 +1,4 @@
-(ns timer-mystica.game)
+(ns gaia-project-timer.game)
 
 (defn new-game-state [players]
   (let [new-player #(assoc % :time-used-ms 0)]

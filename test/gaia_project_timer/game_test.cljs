@@ -1,8 +1,8 @@
-(ns timer-mystica.game-test
+(ns gaia-project-timer.game-test
   (:require
     [cljs.test :refer-macros [deftest testing is]]
-    [timer-mystica.game :as game]
-    [timer-mystica.test-formatter]))
+    [gaia-project-timer.game :as game]
+    [gaia-project-timer.test-formatter]))
 
 ; Test data
 

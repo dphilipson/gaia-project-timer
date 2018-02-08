@@ -1,7 +1,7 @@
-(ns timer-mystica.game-components
+(ns gaia-project-timer.game-components
   (:require
-    [timer-mystica.factions :as factions]
-    [timer-mystica.component-helpers :as helpers]))
+    [gaia-project-timer.factions :as factions]
+    [gaia-project-timer.component-helpers :as helpers]))
 
 (defn text-color-for-background [background-color]
   (if (= background-color :black)
@@ -138,7 +138,7 @@
   (let [{:keys [game-state]} state
         {:keys [current-player active-players passed-players]} game-state
         current-color (:color current-player)]
-    [:div.timer-mystica {:class (helpers/class-string [current-color
+    [:div.gaia-project-timer {:class (helpers/class-string [current-color
                                                        (text-color-for-background current-color)])}
      [meta-button-area state actions]
      [current-player-area game-state actions]

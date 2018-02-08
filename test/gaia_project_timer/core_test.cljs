@@ -1,16 +1,16 @@
-(ns ^:figwheel-always timer-mystica.core-test
+(ns ^:figwheel-always gaia-project-timer.core-test
   (:require
     [cljs.test :refer-macros [deftest testing is]]
     [figwheel.client :as fw]
-    [timer-mystica.setup-test]
-    [timer-mystica.game-test]
-    [timer-mystica.test-formatter]))
+    [gaia-project-timer.setup-test]
+    [gaia-project-timer.game-test]
+    [gaia-project-timer.test-formatter]))
 
 ;; Test runner
 
 (defn run-tests []
   (.clear js/console)
-  (cljs.test/run-all-tests #"timer-mystica.*-test"))
+  (cljs.test/run-all-tests #"gaia-project-timer.*-test"))
 
 (run-tests)
 

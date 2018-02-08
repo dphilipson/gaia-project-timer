@@ -1,6 +1,7 @@
-(ns timer-mystica.setup-components
+(ns gaia-project-timer.setup-components
   (:require
-    [timer-mystica.factions :as factions]
+    [gaia-project-timer.factions :as factions]
+    [gaia-project-timer.setup :as setup]
     [clojure.string :as str]))
 
 ; Faction select
@@ -84,11 +85,11 @@
 
 (defn main [state {:keys [on-set-faction on-set-color on-start-game validate-setup]}]
   (let [errors (validate-setup)]
-    [:div.timer-mystica
+    [:div.gaia-project-timer
      [:div.faction-select-wrapper
-      [:h1 "Timer Mystica"]
+      [:h1 "Gaia Project Timer"]
       [:h4 "Faction Select"]
-      (for [i (range 5)]
+      (for [i (range setup/max-players)]
         (let [player (get-in state [:players i])
               on-faction-change (partial on-set-faction i)
               on-color-change (partial on-set-color i)]

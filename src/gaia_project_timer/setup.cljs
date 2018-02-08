@@ -1,8 +1,8 @@
-(ns timer-mystica.setup
+(ns gaia-project-timer.setup
   (:require
-    [timer-mystica.factions :as factions]))
+    [gaia-project-timer.factions :as factions]))
 
-(def max-players 5)
+(def max-players 4)
 
 (def initial-state
   {:mode    :setup

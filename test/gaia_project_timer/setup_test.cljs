@@ -1,9 +1,9 @@
-(ns timer-mystica.setup-test
+(ns gaia-project-timer.setup-test
   (:require
     [cljs.test :refer-macros [deftest testing is]]
-    [timer-mystica.setup :as setup]
-    [timer-mystica.factions :as factions]
-    [timer-mystica.test-formatter]))
+    [gaia-project-timer.setup :as setup]
+    [gaia-project-timer.factions :as factions]
+    [gaia-project-timer.test-formatter]))
 
 ; Test data
 

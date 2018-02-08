@@ -1,4 +1,4 @@
-(ns timer-mystica.test-formatter
+(ns gaia-project-timer.test-formatter
   (:require
     [cljs.test :as test :include-macros true :refer [report]]))
 

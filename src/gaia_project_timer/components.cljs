@@ -1,7 +1,7 @@
-(ns timer-mystica.components
+(ns gaia-project-timer.components
   (:require
-    [timer-mystica.setup-components :as setup]
-    [timer-mystica.game-components :as game]))
+    [gaia-project-timer.setup-components :as setup]
+    [gaia-project-timer.game-components :as game]))
 
 (defn main [app-state-atom actions]
   (let [{:keys [mode] :as state} @app-state-atom]

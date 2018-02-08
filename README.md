@@ -1,29 +1,30 @@
-# Timer Mystica
+# Gaia Project Timer
 
-A mobile-based game timer for the board game Terra Mystica.
+A mobile-based game timer for the board game Gaia Project.
 
 ## Overview
 
-Terra Mystica is a great board game! But if you're anything like me, sometimes
+(This readme shamelessly copied from
+[Timer Mystica](https://github.com/dphilipson/timer-mystica).)
+
+Gaia Project is a great board game! But if you're anything like me, sometimes
 you want to play a game where everyone doesn't take forever for their turns.
 This app will help keep your friends in line.
 
-Timer Mystica runs on a phone and keeps track of turn order as well as how much
+Gaia Project Timer runs on a phone and keeps track of turn order as well as how much
 time each player has taken. It understands the variable turn order rules of
-Terra Mystica so you can rely on it to keep track of who should be going at any
+Gaia Project so you can rely on it to keep track of who should be going at any
 given time. By tracking how much time each player has used, you can make your
 friends take shots every seven minutes, or just make fun of them for being
 slow.
 
-![gameplay](https://cloud.githubusercontent.com/assets/1661903/12667350/4adb8cb4-c5ff-11e5-8f82-b38fa3dc39c5.png) ![last_player](https://cloud.githubusercontent.com/assets/1661903/12667351/4adc2a7a-c5ff-11e5-9cee-4d2b1c6c9be7.png) ![faction_select](https://cloud.githubusercontent.com/assets/1661903/12667349/4ad76db4-c5ff-11e5-854d-fabb79a0042d.png)
-
 ## Installation
 
-Timer Mystica is a website designed to be viewed as a full screen app on a
+Gaia Project Timer is a website designed to be viewed as a full screen app on a
 mobile device. To start using it, follow these steps:
 
 1. On your mobile device, view the app at
-   <http://dphilipson.github.io/timer-mystica>.
+   <http://dphilipson.github.io/gaia-project-timer>.
 
 2. Save the page to your homescreen.
 
@@ -80,6 +81,6 @@ To create a production build run:
     lein cljsbuild once min
 
 And open your browser in `resources/public/index.html`. You will not
-get live reloading, nor a REPL. 
+get live reloading, nor a REPL.
 
-Copyright © 2015 David Philipson
+Copyright © 2018 David Philipson

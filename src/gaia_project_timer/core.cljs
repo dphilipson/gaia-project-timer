@@ -1,9 +1,9 @@
-(ns ^:figwheel-always timer-mystica.core
+(ns ^:figwheel-always gaia-project-timer.core
   (:require
     [reagent.core :as r]
-    [timer-mystica.setup :as setup]
-    [timer-mystica.game :as game]
-    [timer-mystica.components :as components]
+    [gaia-project-timer.setup :as setup]
+    [gaia-project-timer.game :as game]
+    [gaia-project-timer.components :as components]
     [cljs.reader :as reader]))
 
 (enable-console-print!)
@@ -11,8 +11,8 @@
 ;; define your app data so that it doesn't get over-written on reload
 
 (def schema-version "1")
-(def schema-key "tm-schema-version")
-(def state-key "tm-state")
+(def schema-key "gp-schema-version")
+(def state-key "gp-state")
 
 (defn update-version-clear-state-if-wrong! []
   (let [saved-schema-version (.getItem js/localStorage schema-key)]

@@ -1,4 +1,4 @@
-(ns timer-mystica.component-helpers
+(ns gaia-project-timer.component-helpers
   (:require
     [reagent.core :as r]
     [clojure.string :as str]))
